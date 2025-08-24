@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Mastery Timetable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .time-block {
+            background: rgba(255, 255, 255, 0.95);
+            margin-bottom: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .time-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .time-header {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            position: relative;
+        }
+
+        .time-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .time-content {
+            padding: 25px;
+        }
+
+        .activity {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+            transition: all 0.3s ease;
+        }
+
+        .activity:hover {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
+            transform: translateX(10px);
+        }
+
+        .activity:last-child {
+            margin-bottom: 0;
+        }
+
+        .time-slot {
+            background: #4299e1;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            min-width: 120px;
+            text-align: center;
+            margin-right: 20px;
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+        }
+
+        .activity-text {
+            flex: 1;
+            font-size: 1.1rem;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .break-activity {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            border-left-color: #f56565;
+        }
+
+        .break-activity .time-slot {
+            background: #f56565;
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.3);
+        }
+
+        .tips {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .tips h3 {
+            color: #4a5568;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tip-item {
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38a169;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+            border-radius: 4px;
+            animation: progress 3s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☕ Java Timetable</h1>
+            <p>Fast Track Programming Focus</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="time-block">
+            <div class="time-header">
+                <span class="emoji">🎥</span> 3:00 – 5:00 PM → Video Learning + Coding
+            </div>
+            <div class="time-content">
+                <div class="activity">
+                    <div class="time-slot">3:00 – 3:30</div>
+                    <div class="activity-text">1 video</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">3:30 – 4:00</div>
+                    <div class="activity-text">Same code khud likhna + run karo</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">4:00 – 4:25</div>
+                    <div class="activity-text">Apne 4-5 programs banao (practice)</div>
+                </div>
+                <div class="activity break-activity">
+                    <div class="time-slot">4:25 – 4:30</div>
+                    <div class="activity-text">Break (5 min stretch/water)</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">4:30 – 5:00</div>
+                    <div class="activity-text">Jo doubt hua uska note + extra programs</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="time-block">
+            <div class="time-header">
+                <span class="emoji">💻</span> 5:00 – 7:00 PM → Practice + Programming
+            </div>
+            <div class="time-content">
+                <div class="activity">
+                    <div class="time-slot">5:00 – 5:25</div>
+                    <div class="activity-text">Previous topic ka recap through coding</div>
+                </div>
+                <div class="activity break-activity">
+                    <div class="time-slot">5:25 – 5:30</div>
+                    <div class="activity-text">Break</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">5:30 – 6:00</div>
+                    <div class="activity-text">5-6 coding questions solve karo</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">6:00 – 6:25</div>
+                    <div class="activity-text">Programs banao </div>
+                </div>
+                <div class="activity break-activity">
+                    <div class="time-slot">6:25 – 6:30</div>
+                    <div class="activity-text">Break</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">6:30 – 7:00</div>
+                    <div class="activity-text">More programming practice</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="time-block">
+            <div class="time-header">
+                <span class="emoji">🚀</span> 7:00 – 9:00 PM → Advanced Programming
+            </div>
+            <div class="time-content">
+                <div class="activity">
+                    <div class="time-slot">7:00 – 7:30</div>
+                    <div class="activity-text">Difficult programs attempt karo</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">7:30 – 8:00</div>
+                    <div class="activity-text">Real projects banao</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">8:00 – 8:25</div>
+                    <div class="activity-text">Previous programs improve karo</div>
+                </div>
+                <div class="activity break-activity">
+                    <div class="time-slot">8:25 – 8:30</div>
+                    <div class="activity-text">Break</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">8:30 – 9:00</div>
+                    <div class="activity-text">New concepts through coding</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="time-block">
+            <div class="time-header">
+                <span class="emoji">⚡</span> 9:00 – 10:00 PM → Speed Practice + Review
+            </div>
+            <div class="time-content">
+                <div class="activity">
+                    <div class="time-slot">9:00 – 9:30</div>
+                    <div class="activity-text">Fast typing practice (Java programs)</div>
+                </div>
+                <div class="activity">
+                    <div class="time-slot">9:30 – 10:00</div>
+                    <div class="activity-text">Day ka recap + "aaj kya banaya" list</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h3>⚡ Fast Learning Tricks</h3>
+            <div class="tip-item">
+                <span class="emoji">🚫</span> Copy-paste bilkul nahi - everything type karo
+            </div>
+            <div class="tip-item">
+                <span class="emoji">🎯</span> Har concept ke liye minimum 3 programs likho
+            </div>
+            <div class="tip-item">
+                <span class="emoji">🔍</span> Error aaye to khud solve karo (Google allowed)
+            </div>
+            <div class="tip-item">
+                <span class="emoji">📊</span> Daily target: 8-10 small programs + 1-2 big programs
+            </div>
+            <div class="tip-item">
+                <span class="emoji">⏰</span> 25-30 min ke baad hamesha 5 min break
+            </div>
+        </div>
+    </div>
+</body>
+</html>
